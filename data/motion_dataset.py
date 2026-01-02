@@ -56,7 +56,6 @@ class MotionDataset(Dataset):
         return len(self.files_name)
     
     def __getitem__(self, idx):
-        print(idx)
         # read npy motion file
         motion = np.load(self.motion_files[idx])
 
