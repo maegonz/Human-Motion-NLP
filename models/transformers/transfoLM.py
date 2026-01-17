@@ -96,7 +96,8 @@ class TransfoLM(nn.Module):
         tgt = tgt.long()
         tgt_input_ids = tgt[:, :-1].contiguous()
         tgt_labels = tgt[:, 1:].contiguous()
-        decoder_attn_mask = t5_attn_mask[:, :-1].contiguous()
+        if t5_attn_mask is not None:
+            decoder_attn_mask = t5_attn_mask[:, :-1].contiguous()
 
         # Decoder forward pass using T5 LM
         outputs = self.lm(encoder_outputs=encoder_output,
