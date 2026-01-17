@@ -58,7 +58,7 @@ class TransfoLM(nn.Module):
         self.dropout = nn.Dropout(dropout)
 
     
-    def forward(self, src, tgt):
+    def forward(self, src, tgt, encoder_attn_mask=None, t5_attn_mask=None):
         """
         Params
         -------
@@ -66,6 +66,8 @@ class TransfoLM(nn.Module):
             input to the encoder, which is the motion
         tgt: torch.Tensor
             input to the decoder, which is the text
+        mask: torch.Tensor, optional
+            attention mask for the encoder, by default None
 
         Returns
         -------
@@ -83,24 +85,24 @@ class TransfoLM(nn.Module):
         # Encoder
         encoder_output = src_emb
         for encoder in self.encoder:
-            encoder_output = encoder(encoder_output, mask=None)
+            encoder_output = encoder(encoder_output, mask=encoder_attn_mask)
 
         # Project encoder output to LM model dimension
         encoder_output = self.projection(encoder_output)
         # Wrap for T5 compatibility
         encoder_output = BaseModelOutput(last_hidden_state=encoder_output)
-        # Attention mask for T5
-        encoder_attention_mask = torch.ones((B, T), dtype=torch.long, device=src.device)
-
+        
         # Teacher forcing during training
         tgt = tgt.long()
         tgt_input_ids = tgt[:, :-1].contiguous()
         tgt_labels = tgt[:, 1:].contiguous()
+        decoder_attn_mask = t5_attn_mask[:, :-1].contiguous()
 
         # Decoder forward pass using T5 LM
         outputs = self.lm(encoder_outputs=encoder_output,
-                        attention_mask=encoder_attention_mask,
+                        attention_mask=encoder_attn_mask,
                         decoder_input_ids=tgt_input_ids,
+                        decoder_attention_mask=decoder_attn_mask,
                         labels=tgt_labels,
                         return_dict=True)
         
