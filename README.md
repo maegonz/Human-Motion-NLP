@@ -76,6 +76,21 @@ a person jump hop to the right#a/DET person/NOUN jump/NOUN hop/NOUN to/ADP the/D
 
 *Note : more information about the dataset and how to obtain it can be found [there](https://github.com/EricGuo5513/HumanML3D).*
 
+## Architecture
+
+The project implements two complementary architectures for motion-to-text generation:
+
+1. **Transformer Encoder + Pre-trained Language Model Decoder**
+   - Encodes 3D motion sequences using a transformer encoder
+   - Decodes using a pre-trained language model (defaults to T5)
+   - Leverages transfer learning from large-scale text corpora
+   - Benefits from pre-trained linguistic knowledge
+
+2. **Transformer Model from Scratch**
+   - Custom transformer architecture trained end-to-end on the HumanML3D dataset
+   - Allows direct optimization for motion-to-text task
+   - Provides flexibility in architecture design and hyperparameter tuning
+
 
 ## Current Usage
 
@@ -86,4 +101,5 @@ The project currently supports:
 
 Future updates will include:  
 - Gesture-to-motion generation  
-- Bidirectional motion-language modeling  
+- Bidirectional motion-language modeling
+
