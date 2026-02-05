@@ -113,7 +113,7 @@ class TransfoLM(nn.Module):
             # Generation mode
             outputs_ids = self.lm.generate(
                 encoder_outputs=encoder_output,
-                max_length=50,
+                max_length=20,
                 num_beams=4,
                 early_stopping=True,
                 output_scores=True,
