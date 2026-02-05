@@ -4,7 +4,7 @@ from torch.optim import Optimizer
 from torch.utils.data import DataLoader
 from torch.amp import autocast, GradScaler
 from tqdm import tqdm
-from ..metrics import score
+from ..metrics import scores
 
 
 def training(model: nn.Module,
@@ -140,7 +140,7 @@ def evaluation(model: nn.Module,
     """
 
     model.eval()
-    total_accuracy = []
+    metrics_scores = []
 
     with torch.no_grad():
         for id, item in enumerate(data_loader):
@@ -157,8 +157,8 @@ def evaluation(model: nn.Module,
                 print(f"GT: {caption}")
                 print(f"Pred: {output}")
                 print("-----")
-                accuracy = score(caption, output)
-                print(f"Accuracy: {accuracy}\n")
-                total_accuracy.append(accuracy)
+                metrics = scores(caption, output)
+                print(f"Metrics: {metrics}\n")
+                metrics_scores.append(metrics)
 
-    return total_accuracy
+    return metrics_scores
