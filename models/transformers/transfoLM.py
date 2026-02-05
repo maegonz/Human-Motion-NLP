@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from transformers import AutoTokenizer, T5ForConditionalGeneration
 from transformers.modeling_outputs import BaseModelOutput
-from .blocks import PositionalEmbedding
+from .blocks import PositionalEmbedding, MotionAdapter
 from .encoders import Encoder
 
 class TransfoLM(nn.Module):
@@ -57,7 +57,8 @@ class TransfoLM(nn.Module):
         self.lm.config.use_cache = False  # Disable caching for training
 
         # Projection layer to map encoder output to LM model dimension
-        self.projection = nn.Linear(model_dim, self.lm.config.d_model)
+        # self.projection = nn.Linear(model_dim, self.lm.config.d_model)
+        self.projection = MotionAdapter(model_dim=model_dim, lm_model_dim=self.lm.config.d_model, dropout=dropout)
 
         # Dropout layer
         self.dropout = nn.Dropout(dropout)

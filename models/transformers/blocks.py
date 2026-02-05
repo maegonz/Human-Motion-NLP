@@ -130,3 +130,19 @@ class FeedForward(nn.Module):
         feed_fwrd = self.relu(feed_fwrd)
         feed_fwrd = self.linear_2(feed_fwrd)
         return feed_fwrd
+    
+
+class MotionAdapter(nn.Module):
+    def __init__(self, model_dim=512, lm_model_dim=512, dropout=0.1):
+        super().__init__()
+        self.adapter = nn.Sequential(
+            nn.Linear(model_dim, lm_model_dim),
+            nn.ReLU(),
+            nn.Dropout(dropout),
+            nn.Linear(lm_model_dim, lm_model_dim),
+            nn.ReLU(),
+            nn.Linear(lm_model_dim, lm_model_dim)
+        )
+        
+    def forward(self, x):
+        return self.adapter(x)
